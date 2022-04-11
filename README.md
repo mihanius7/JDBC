@@ -1,3 +1,3 @@
 # JDBC-dainiak
 
-SQL database utilite using JDBC. Works with dvd_rental database on local postgree server.
+SQL database utility using JDBC. Works with dvd_rental database on local postgree server.
