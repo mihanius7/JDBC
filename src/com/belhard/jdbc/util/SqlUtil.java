@@ -42,19 +42,6 @@ public class SqlUtil {
 
     public static String getCountries() throws SQLException {
         initConnection();
-        String queryMask = "SELECT city, country FROM city \n" +
-                "JOIN country ON city.country_id = country.country_id ORDER BY country";
-        PreparedStatement statement = connection.prepareStatement(queryMask);
-        ResultSet resultSet = statement.executeQuery();
-        StringBuilder output = new StringBuilder(String.format(" № %24.24s %16.16s\n", "City", "Country"));
-        int i = 0;
-        while (resultSet.next()) {
-            output.append(String.format("%3d %24.24s %16.16s\n",
-                    ++i,
-                    resultSet.getString("city"),
-                    resultSet.getString("country")));
-        }
-        connection.close();
-        return output.toString();
+        return "to be continued";
     }
 }
