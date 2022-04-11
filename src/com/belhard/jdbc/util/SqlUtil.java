@@ -3,7 +3,7 @@ package com.belhard.jdbc.util;
 import java.sql.*;
 
 public class SqlUtil {
-    private static final String URL = "jdbc:postgres//localhost:5432/dvd_rental";
+    private static final String URL = "jdbc:postgresql://localhost:5432/dvd_rental";
     private static final String USER = "postgres";
     private static final String PASSWD = "root";
     private static Connection connection;
@@ -20,11 +20,11 @@ public class SqlUtil {
     }
 
     public static String getTableByQuery(String columnName, String tableName) throws SQLException {
-        String queryMask = "SELECT ? FROM ?";
+        String queryMask = "SELECT * FROM film";
         PreparedStatement statement = connection.prepareStatement(queryMask);
-        statement.setString(1, columnName);
-        statement.setString(2, tableName);
-        int result = statement.executeUpdate();
-        return String.valueOf(result);
+//        statement.setString(1, columnName);
+//        statement.setString(2, tableName);
+        boolean hasResult = statement.execute();
+        return String.valueOf(hasResult);
     }
 }
