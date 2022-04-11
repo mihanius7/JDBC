@@ -8,7 +8,7 @@ public class Task1 {
 
     public static void main(String[] args) {
         try {
-            System.out.println(SqlUtil.getTableByQuery("title", "film"));
+            System.out.println(SqlUtil.getFilms(2005, 2007));
         } catch (SQLException e) {
             e.printStackTrace();
         }
