@@ -3,15 +3,18 @@ package com.belhard.jdbc.util;
 import java.sql.*;
 
 public class SqlUtil {
-    private static final String URL = "localhost:5432";
+    private static final String URL = "jdbc:postgres//localhost:5432/dvd_rental";
     private static final String USER = "postgres";
     private static final String PASSWD = "root";
     private static Connection connection;
 
     static {
         try {
+            Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(URL, USER, PASSWD);
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -22,6 +25,6 @@ public class SqlUtil {
         statement.setString(1, columnName);
         statement.setString(2, tableName);
         int result = statement.executeUpdate();
-        return null;
+        return String.valueOf(result);
     }
 }
