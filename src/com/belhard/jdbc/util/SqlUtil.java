@@ -1,6 +1,12 @@
 package com.belhard.jdbc.util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SqlUtil {
     private static final String URL = "jdbc:postgresql://localhost:5432/dvd_rental";
@@ -40,7 +46,7 @@ public class SqlUtil {
         return output.toString();
     }
 
-    public static String getCountries() throws SQLException {
+    public static String getCities() throws SQLException {
         initConnection();
         String queryMask = "SELECT city, country FROM city \n" +
                 "JOIN country ON city.country_id = country.country_id ORDER BY country";
@@ -48,6 +54,7 @@ public class SqlUtil {
         ResultSet resultSet = statement.executeQuery();
         StringBuilder output = new StringBuilder(String.format(" № %24.24s %16.16s\n", "City", "Country"));
         int i = 0;
+        List<City> city = new ArrayList<>(0);
         while (resultSet.next()) {
             output.append(String.format("%3d %24.24s %16.16s\n",
                     ++i,
@@ -56,5 +63,26 @@ public class SqlUtil {
         }
         connection.close();
         return output.toString();
+    }
+
+    public class City {
+        String name;
+        String country;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
     }
 }
