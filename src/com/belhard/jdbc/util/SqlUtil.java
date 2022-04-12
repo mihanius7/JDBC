@@ -13,6 +13,7 @@ public class SqlUtil {
     private static final String USER = "postgres";
     private static final String PASSWD = "root";
     private static Connection connection;
+    private static PreparedStatement statement;
 
     static {
         try {
@@ -22,18 +23,25 @@ public class SqlUtil {
         }
     }
 
-    private static void initConnection() throws SQLException {
+    private static void initResources(String queryMask) throws SQLException {
         connection = DriverManager.getConnection(URL, USER, PASSWD);
+        statement = connection.prepareStatement(queryMask);
+        System.out.println("Resources ready! ");
+        System.out.println("Executing query: \"" + statement + "\"");
+    }
+
+    private static void closeResources() throws SQLException {
+        connection.close();
+        statement.close();
+        System.out.println("Resources closed. ");
     }
 
     public static String getFilms(int yearMin, int yearMax) throws SQLException {
-        initConnection();
         String queryMask = "SELECT title, release_year, rating, length FROM film \n" +
-                "WHERE release_year >= ? AND release_year <= ? ORDER BY length DESC;\n";
-        PreparedStatement statement = connection.prepareStatement(queryMask);
+                "WHERE release_year >= ? AND release_year <= ? ORDER BY length DESC;";
+        initResources(queryMask);
         statement.setInt(1, yearMin);
         statement.setInt(2, yearMax);
-        System.out.println("Executing query: " + statement + "\n");
         ResultSet resultSet = statement.executeQuery();
         StringBuilder output = new StringBuilder(String.format("%32.32s %6.6s %12.12s \n", "Title", "Year", "Duration, m"));
         while (resultSet.next()) {
@@ -42,18 +50,15 @@ public class SqlUtil {
                     resultSet.getInt("release_year"),
                     resultSet.getInt("length")));
         }
-        connection.close();
+        closeResources();
         return output.toString();
     }
 
     public static List<City> getCities() throws SQLException {
-        initConnection();
         String queryMask = "SELECT city, country FROM city \n" +
                 "JOIN country ON city.country_id = country.country_id ORDER BY country";
-        PreparedStatement statement = connection.prepareStatement(queryMask);
+        initResources(queryMask);
         ResultSet resultSet = statement.executeQuery();
-//        StringBuilder output = new StringBuilder(String.format(" № %24.24s %16.16s\n", "City", "Country"));
-        int i = 0;
         List<City> cities = new ArrayList<>(0);
         City city;
         while (resultSet.next()) {
@@ -62,7 +67,7 @@ public class SqlUtil {
             city.setCountry(resultSet.getString("country"));
             cities.add(city);
         }
-        connection.close();
+        closeResources();
         return cities;
     }
 
