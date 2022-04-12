@@ -46,26 +46,27 @@ public class SqlUtil {
         return output.toString();
     }
 
-    public static String getCities() throws SQLException {
+    public static List<City> getCities() throws SQLException {
         initConnection();
         String queryMask = "SELECT city, country FROM city \n" +
                 "JOIN country ON city.country_id = country.country_id ORDER BY country";
         PreparedStatement statement = connection.prepareStatement(queryMask);
         ResultSet resultSet = statement.executeQuery();
-        StringBuilder output = new StringBuilder(String.format(" № %24.24s %16.16s\n", "City", "Country"));
+//        StringBuilder output = new StringBuilder(String.format(" № %24.24s %16.16s\n", "City", "Country"));
         int i = 0;
-        List<City> city = new ArrayList<>(0);
+        List<City> cities = new ArrayList<>(0);
+        City city;
         while (resultSet.next()) {
-            output.append(String.format("%3d %24.24s %16.16s\n",
-                    ++i,
-                    resultSet.getString("city"),
-                    resultSet.getString("country")));
+            city = new City();
+            city.setName(resultSet.getString("city"));
+            city.setCountry(resultSet.getString("country"));
+            cities.add(city);
         }
         connection.close();
-        return output.toString();
+        return cities;
     }
 
-    public class City {
+    public static class City {
         String name;
         String country;
 
@@ -83,6 +84,11 @@ public class SqlUtil {
 
         public void setCountry(String country) {
             this.country = country;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%24.24s %20.20s", name, country);
         }
     }
 }
